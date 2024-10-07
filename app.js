@@ -11,7 +11,7 @@ const display = document.querySelector('.display');
 buttons.forEach((button) => {
     button.addEventListener('click', (event) => {
       // This log is for testing purposes to verify we're getting the correct value
-      appendToDisplay(event.target.innerText);
+
       // Future logic to capture the button's value would go here...
     });
   });
@@ -19,7 +19,7 @@ buttons.forEach((button) => {
   calculator.addEventListener('click', (event) => {
     // This log is for testing purposes to verify we're getting the correct value
     // You have to click a button to see this log
-  appendToDisplay(event.target.innerText);
+  
     // Example
     if (event.target.classList.contains('number')) {
         const number = event.target.innerText;
@@ -28,36 +28,58 @@ buttons.forEach((button) => {
         } else {
           calculator.value += number;
         }
+appendToDisplay(number);
+   
     }
   
     // Example
     if (event.target.innerText === '*') {
-        const a = parseFloat(calculator.value);
-        const b = parseFloat(calculator.value);
-        calculator.value = multiply(a, b);
+        appendToDisplay('*');
       }
        if (event.target.innerText === '+') {
-        const a = parseFloat(calculator.value);
-        const b = parseFloat(calculator.value);
-        calculator.value = add(a, b);
+        appendToDisplay('+');
       }
        if (event.target.innerText === '-') {
-        const a = parseFloat(calculator.value);
-        const b = parseFloat(calculator.value);
-        calculator.value = subtract(a, b);
+        appendToDisplay('-');
       }
        if (event.target.innerText === '/') {
-        const a = parseFloat(calculator.value);
-        const b = parseFloat(calculator.value);
-        calculator.value = divide(a, b);
+        appendToDisplay('/');
+      }
+      if (event.target.innerText === '=') {
+        const expression = display.innerText;
+        const numbers = expression.match(/\d+/g);
+        const operators = expression.match(/[\+\-*/]/g);
+
+        let result = numbers[0];
+        for (let i = 0; i < operators.length; i++) {
+          const operator = operators[i];
+          const nextNumber = numbers[i + 1];
+
+          switch (operator) {
+            case '+':
+              result = add(result, nextNumber);
+              break;
+            case '-':
+              result = subtract(result, nextNumber);
+              break;
+            case '*':
+              result = multiply(result, nextNumber);
+              break;
+            case '/':
+              result = divide(result, nextNumber);
+              break;
+          }
+        }
+        display.innerText = result;
+        calculator.value = result;
       }
        if (event.target.innerText === 'C') {
-        calculator.value = '0';
+        clearDisplay();
       }
   });
 /*-------------------------------- Functions --------------------------------*/
 function add(a, b){
-    return a + b;
+    return parseFloat(a) + parseFloat(b);
 }
 
 function subtract(a, b){
@@ -75,10 +97,10 @@ function divide(a, b){
     return a / b;
 }
 
-function appendToDisplay(){
-display.value += calculator.value;
+function appendToDisplay(event){
+  display.innerText += event;
 }
 
 function clearDisplay(){
-display.value = '';
+display.innerText = '';
 }
